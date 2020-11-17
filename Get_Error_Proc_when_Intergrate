@@ -1,0 +1,85 @@
+import re
+from pathlib import Path
+import os.path
+from os import path
+import os
+
+print('\n\t\t\t _______________________________________')
+print('\n\t\t\t|      Get Error PROC - by Hung Duy     |')
+print('\n\t\t\t|             Version 1.0               |')
+print('\n\t\t\t --------------------------------------- ')
+print("\n\n      Usage:\n          - Enter path of tealeaves.log file\n")
+# rba_osshell_sched_dy.xml
+# tealeaves.log
+# input #=================================================================================================================================================
+print("\nEnter tealeaves.log path: ")
+txtpath = input()
+while path.exists(txtpath) == False:
+    print("\nNot found the tealeaves.log path above ...\n\nPlease Enter correct tealeaves.log path: ")
+    txtpath = input()
+#print("\nEnter rba_osshell_sched_dy.xml path: ")
+#scheduler = input()
+#while path.exists(scheduler) == False:
+    #print("\nNot found the rba_osshell_sched_dy.xml path above ...\n\nPlease Enter right rba_osshell_sched_dy.xml path again: ")
+    #scheduler = input()
+
+try:
+    print("\nStarting...\n")
+    results = ''
+    txtfile = open(txtpath).read()
+    #schedulerfile = open(scheduler).read()
+    resultInit = ''
+    resultRun = ''
+    resultms = ''
+    resultSync = ''
+    resultSyncIni = ''
+    resultEngStrt = ''
+    temp = ''
+    temp1 = ''
+    # Modify tealeaves.log file #=====================================================================================================================================
+    resultInit = re.findall('([a-z0-9A-Z_]+_Init)', txtfile)
+    resultRun = re.findall('([a-z0-9A-Z_]+_Run)', txtfile)
+    resultms = re.findall('([a-z0-9A-Z_]+[0-9]ms)', txtfile)
+    resultSync = re.findall('([a-z0-9A-Z_]+_Sync\n)', txtfile)
+    resultSyncIni = re.findall('([a-z0-9A-Z_]+_SyncIni)', txtfile)
+    resultEngStrt = re.findall('([a-z0-9A-Z_]+_EngStrt\n)', txtfile)
+    results = results +     '**** PROC INIT ******************************************************************************************************\n'
+    for listitem in resultInit:
+        results = results + '\n' + '\t\t\t\t\t<SW-SERVICE-REF>' + listitem + '</SW-SERVICE-REF>'
+    results = results + '\n\n**** PROC RUN *******************************************************************************************************\n'
+    for listitem in resultRun:
+        results = results + '\n' + '\t\t\t\t\t<SW-SERVICE-REF>' + listitem + '</SW-SERVICE-REF>'
+    results = results + '\n\n**** PROC MS ********************************************************************************************************\n'
+    for listitem in resultms:
+        results = results + '\n' + '\t\t\t\t\t<SW-SERVICE-REF>' + listitem + '</SW-SERVICE-REF>'
+    results = results + '\n\n**** PROC SYNC ******************************************************************************************************\n'
+    for listitem in resultSync:
+        listitem = listitem.replace('\n', '')
+        results = results + '\n' + '\t\t\t\t\t<SW-SERVICE-REF>' + listitem + '</SW-SERVICE-REF>'
+    results = results + '\n\n**** PROC SYNCINI ***************************************************************************************************\n'
+    for listitem in resultSyncIni:
+        results = results + '\n' + '\t\t\t\t\t<SW-SERVICE-REF>' + listitem + '</SW-SERVICE-REF>'
+    results = results + '\n\n**** PROC ENGSTRT ***************************************************************************************************\n'
+    for listitem in resultEngStrt:
+        results = results + '\n' + '\t\t\t\t\t<SW-SERVICE-REF>' + listitem + '</SW-SERVICE-REF>'
+        
+    #results = resultInit[0] + '\n\n\n\n' + resultRun[0] +  '\n\n\n\n' + resultms[0] + '\n\n\n\n' + resultSync[0] +  '\n\n\n\n' + resultSyncIni[0] + '\n\n\n\n' + resultEngStrt[0]
+        
+    #temp = re.search('([a-zA-Z0-9_]+\n)', results)
+    #while temp != None:
+        #temp1 = '\t\t\t\t\t<SW-SERVICE-REF>' + temp[1] + '</SW-SERVICE-REF>' 
+        #results = results.replace(temp[0], temp1)
+        #temp = re.search('([a-zA-Z0-9_]+\n)', results)
+        
+
+    #txtfile2 = result2 + '\n=====' +  result3 + '\n=====' + result4
+    txtfile3 = open((os.path.splitext(txtpath)[0]) + "_list_Err_PROC_.log", 'w')
+    txtfile3.write(results)
+    txtfile3.close()
+    
+    print("Tool run completed, check tealeaves_list_Err_PROC_.log file in tealeaves.log's folder...\n")
+    
+except ValueError as outputError:
+    print(outputError)  
+
+os.system("pause")
